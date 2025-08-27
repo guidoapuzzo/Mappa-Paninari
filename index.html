@@ -56,9 +56,16 @@
             var lng = parseFloat(row.lng);
 
             if(!isNaN(lat) && !isNaN(lng)) {
+              // 1. Prepara il contenuto base del popup
+              let popupContent = "<b>" + row.nome + "</b><br><a href='" + row.video + "' target='_blank'>Guarda il video</a>";
+
+              // 2. Aggiungi il link a Instagram, SOLO SE ESISTE
+              if (row.instagram && row.instagram.trim() !== '') {
+                popupContent += "<br><a href='" + row.instagram + "' target='_blank'>Pagina Instagram</a>";
+              }
               L.marker([lat, lng])
                 .addTo(map)
-                .bindPopup("<b>" + row.nome + "</b><br><a href='" + row.video + "' target='_blank'>Guarda il video</a>");
+                .bindPopup(popupContent);
             }
           }
         });
