@@ -77,6 +77,10 @@
                 // Rendi il marker semitrasparente per distinguerlo
                 markerOptions.opacity = 0.7; 
               }
+              
+              // Costruisce l'URL per Google Maps. La partenza viene rilevata in automatico.
+              let directionsURL = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
+              popupContent += "<br><a href='" + directionsURL + "' target='_blank'><b>Ottieni Indicazioni</b></a>";
 
               L.marker([lat, lng], markerOptions)
                 .addTo(map)
