@@ -16,3 +16,131 @@
   font: 14px/1.4 system-ui, sans-serif;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
 }
+
+/* ---------- Marker ---------- */
+.pin-wrapper {
+  background: none;
+  border: none;
+}
+
+.pin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, #ff9a3c, #f4511e);
+  border: 3px solid #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s ease;
+}
+
+.pin span {
+  transform: rotate(45deg);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pin:hover {
+  transform: rotate(-45deg) scale(1.12);
+}
+
+/* Posizione approssimativa: pin tratteggiato e più chiaro */
+.pin--approx {
+  background: linear-gradient(135deg, #ffc27a, #ff8a65);
+  border-style: dashed;
+}
+
+/* ---------- Popup ---------- */
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+  font: 14px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #222;
+}
+
+.popup-title {
+  margin: 0 0 6px;
+  padding-right: 12px;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.popup-note {
+  margin: 0 0 6px;
+  color: #555;
+  font-style: italic;
+}
+
+.popup-note--approx {
+  color: #b45309;
+}
+
+.popup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.popup-btn {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d6d6d6;
+  background: #f7f7f7;
+  color: #222 !important;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.popup-btn:hover {
+  background: #ececec;
+}
+
+.popup-btn--primary {
+  background: #f4511e;
+  border-color: #f4511e;
+  color: #fff !important;
+}
+
+.popup-btn--primary:hover {
+  background: #d84315;
+}
+
+/* ---------- Controlli ---------- */
+.leaflet-touch .leaflet-bar a {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.leaflet-touch .leaflet-bar {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+}
+
+.leaflet-touch .leaflet-bar a:first-child {
+  border-radius: 12px 12px 0 0;
+}
+
+.leaflet-touch .leaflet-bar a:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+.leaflet-touch .leaflet-bar a:only-child {
+  border-radius: 12px;
+}
+
+/* Sfondo mappa più chiaro e neutro: i pin arancioni risaltano di più */
+.leaflet-tile-pane {
+  filter: grayscale(.65) saturate(.8) brightness(1.06) contrast(.92);
+}

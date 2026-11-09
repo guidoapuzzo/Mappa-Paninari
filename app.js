@@ -23,10 +23,10 @@ function safeUrl(value) {
   }
 }
 
-function link(href, label) {
+function link(href, label, className = 'popup-btn') {
   const url = safeUrl(href);
   return url
-    ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+    ? `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
     : '';
 }
 
@@ -35,29 +35,34 @@ function hasValue(value) {
 }
 
 function buildPopup(row, lat, lng) {
-  const parts = [`<b>${escapeHtml(row.nome)}</b>`];
+  const actions = [];
 
   const video = link(row.video, 'Guarda il video');
-  if (video) parts.push(video);
+  if (video) actions.push(video);
 
   if (hasValue(row.instagram)) {
     const instagram = link(row.instagram, 'Pagina Instagram');
-    if (instagram) parts.push(instagram);
+    if (instagram) actions.push(instagram);
   }
 
   // La partenza viene rilevata automaticamente da Google Maps.
   const directionsURL = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-  parts.push(link(directionsURL, '<b>Ottieni Indicazioni</b>'));
+  actions.push(link(directionsURL, 'Ottieni Indicazioni', 'popup-btn popup-btn--primary'));
 
+  const notes = [];
   if (hasValue(row.dettagli_posizione)) {
-    parts.push(`<i>${escapeHtml(row.dettagli_posizione)}</i>`);
+    notes.push(`<p class="popup-note">${escapeHtml(row.dettagli_posizione)}</p>`);
   }
-
   if (isApproximate(row)) {
-    parts.push('<i>(Posizione approssimativa)</i>');
+    notes.push('<p class="popup-note popup-note--approx">(Posizione approssimativa)</p>');
   }
 
-  return parts.join('<br>');
+  return `
+    <div class="popup">
+      <h3 class="popup-title">${escapeHtml(row.nome)}</h3>
+      ${notes.join('')}
+      <div class="popup-actions">${actions.join('')}</div>
+    </div>`;
 }
 
 function isApproximate(row) {
@@ -70,9 +75,24 @@ function addMarker(map, row) {
   if (Number.isNaN(lat) || Number.isNaN(lng)) return false;
 
   // Marker semitrasparente se la posizione è approssimativa
-  const options = isApproximate(row) ? { opacity: 0.7 } : {};
-  L.marker([lat, lng], options).addTo(map).bindPopup(buildPopup(row, lat, lng));
+  const options = { icon: createIcon(isApproximate(row)), title: row.nome };
+  if (isApproximate(row)) options.opacity = 0.7;
+
+  L.marker([lat, lng], options)
+    .addTo(map)
+    .bindPopup(buildPopup(row, lat, lng), { maxWidth: 260, autoPanPadding: [24, 24] });
   return true;
+}
+
+/** Pin arancione con panino, più riconoscibile del marker blu di default. */
+function createIcon(approximate) {
+  return L.divIcon({
+    className: 'pin-wrapper',
+    html: `<div class="pin${approximate ? ' pin--approx' : ''}"><span>🥪</span></div>`,
+    iconSize: [40, 48],
+    iconAnchor: [20, 46],
+    popupAnchor: [0, -42],
+  });
 }
 
 function showError(message) {
@@ -96,12 +116,15 @@ function loadPlaces(map) {
   });
 }
 
-const map = L.map('map').setView(MILANO, 12);
+const map = L.map('map', { zoomControl: false }).setView(MILANO, 12);
 
+// Sfondo OpenStreetMap; viene schiarito e desaturato via CSS (.leaflet-tile-pane) così i pin risaltano
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '© OpenStreetMap contributors',
 }).addTo(map);
 
-L.control.locate().addTo(map);
+// Controlli in basso a destra: a portata di pollice su mobile
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+L.control.locate({ position: 'bottomright' }).addTo(map);
 loadPlaces(map);
