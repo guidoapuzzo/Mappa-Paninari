@@ -7,6 +7,7 @@ Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe
 ## Funzionalità
 
 - Mappa interattiva (OpenStreetMap) centrata su Milano
+- Pin personalizzati raggruppati in cluster numerati quando sono vicini (si aprono con un tocco o con lo zoom)
 - Un marker per ogni locale, con popup che contiene nome, link al video, pagina Instagram e dettagli sulla posizione
 - Pulsante **"Ottieni indicazioni"** che apre Google Maps con la destinazione già impostata
 - Geolocalizzazione dell'utente
@@ -20,6 +21,7 @@ Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe
 | Frontend | HTML5, CSS3, JavaScript (ES6+, nessun framework né build) |
 | Mappa | [Leaflet](https://leafletjs.com/) 1.9.4 + tile [OpenStreetMap](https://www.openstreetmap.org/) |
 | Geolocalizzazione | [leaflet.locatecontrol](https://github.com/domoritz/leaflet-locatecontrol) |
+| Raggruppamento marker | [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) 1.5.3 |
 | Parsing dati | [PapaParse](https://www.papaparse.com/) |
 | "Backend" / dati | Google Sheets pubblicato come CSV |
 | Hosting | GitHub Pages |

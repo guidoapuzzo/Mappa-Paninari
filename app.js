@@ -69,7 +69,7 @@ function isApproximate(row) {
   return hasValue(row.approssimativo) && row.approssimativo.trim().toLowerCase() === 'sì';
 }
 
-function addMarker(map, row) {
+function addMarker(layer, row) {
   const lat = parseFloat(row.lat);
   const lng = parseFloat(row.lng);
   if (Number.isNaN(lat) || Number.isNaN(lng)) return false;
@@ -79,7 +79,7 @@ function addMarker(map, row) {
   if (isApproximate(row)) options.opacity = 0.7;
 
   L.marker([lat, lng], options)
-    .addTo(map)
+    .addTo(layer)
     .bindPopup(buildPopup(row, lat, lng), { maxWidth: 260, autoPanPadding: [24, 24] });
   return true;
 }
@@ -104,12 +104,16 @@ function showError(message) {
 }
 
 function loadPlaces(map) {
+  // Raggruppa i pin vicini: si aprono con un tocco/zoom
+  const cluster = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 45 });
+  map.addLayer(cluster);
+
   Papa.parse(SHEET_URL, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: (results) => {
-      const added = results.data.filter((row) => addMarker(map, row)).length;
+      const added = results.data.filter((row) => addMarker(cluster, row)).length;
       if (added === 0) showError('Nessun locale trovato nei dati.');
     },
     error: () => showError('Impossibile caricare i dati. Riprova più tardi.'),

@@ -144,3 +144,22 @@
 .leaflet-tile-pane {
   filter: grayscale(.65) saturate(.8) brightness(1.06) contrast(.92);
 }
+
+/* ---------- Cluster ---------- */
+.marker-cluster {
+  background: rgba(244, 81, 30, .3);
+  border-radius: 50%;
+  background-clip: padding-box;
+}
+
+.marker-cluster div {
+  width: 30px;
+  height: 30px;
+  margin: 5px 0 0 5px;
+  border-radius: 50%;
+  background: #f4511e;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+  font: 700 14px/30px system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
