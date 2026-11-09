@@ -1,7 +1,7 @@
 'use strict';
 
 const MILANO = [45.4642, 9.19];
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTqWxIz8pycWc_XJr3tuLPB3YoyggnvoXRABjGw2XBan4_OC9JuX3ukQnQ95qIFgJwX8_p_NHMBekjA/pub?output=csv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfES7XOCgqkVs8u8H5jdAUSsLliB6a6OXX2nSBXhcaXpvGS4KQSYDJUp0hCnQ7Cn-9MQSOoKzlMAe1/pub?gid=2113170927&single=true&output=csv';
 
 /** Escape dei caratteri HTML: i dati del foglio non vanno mai inseriti "grezzi" nel DOM. */
 function escapeHtml(value) {
