@@ -1,22 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
   <meta charset="utf-8" />
   <title>Mappa Paninari</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <!-- LEAFLET.LOCATE CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
-
-  <style>
-    #map {
-      height: 100vh;
-      width: 100%;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="map"></div>
@@ -25,74 +18,9 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <!-- PapaParse -->
   <script src="https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
-
   <!-- LEAFLET.LOCATE JS -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 
-  <script>
-    // Inizializza la mappa su Milano
-    var map = L.map('map').setView([45.4642, 9.19], 12);
-
-    // Aggiunge sfondo OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // ATTIVA LA GEOLOCALIZZAZIONE
-    L.control.locate().addTo(map);
-
-    // URL del tuo Google Sheet pubblicato in CSV
-    var sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTqWxIz8pycWc_XJr3tuLPB3YoyggnvoXRABjGw2XBan4_OC9JuX3ukQnQ95qIFgJwX8_p_NHMBekjA/pub?output=csv";
-
-    // Legge i dati dal CSV
-    Papa.parse(sheetURL, {
-      download: true,
-      header: true,
-      complete: function(results) {
-        results.data.forEach(function(row) {
-          if(row.lat && row.lng) {
-            var lat = parseFloat(row.lat);
-            var lng = parseFloat(row.lng);
-
-            if(!isNaN(lat) && !isNaN(lng)) {
-              // 1. Prepara il contenuto base del popup
-              let popupContent = "<b>" + row.nome + "</b><br><a href='" + row.video + "' target='_blank'>Guarda il video</a>";
-
-              // 2. Aggiungi il link a Instagram, SOLO SE ESISTE
-              if (row.instagram && row.instagram.trim() !== '') {
-                popupContent += "<br><a href='" + row.instagram + "' target='_blank'>Pagina Instagram</a>";
-              }
-
-              // Costruisce l'URL per Google Maps. La partenza viene rilevata in automatico.
-              let directionsURL = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
-              popupContent += "<br><a href='" + directionsURL + "' target='_blank'><b>Ottieni Indicazioni</b></a>";
-              
-              if (row.dettagli_posizione && row.dettagli_posizione.trim() !== '') {
-                // Aggiunge i dettagli, magari in corsivo per distinguerli
-                popupContent += "<br><i>" + row.dettagli_posizione + "</i>";
-              }
-
-              // Prepara le opzioni per il marker
-              let markerOptions = {};
-
-              // Controlla se la posizione è approssimativa
-              if (row.approssimativo && row.approssimativo.toLowerCase() === 'sì') {
-                popupContent += "<br><i>(Posizione approssimativa)</i>";
-                // Rendi il marker semitrasparente per distinguerlo
-                markerOptions.opacity = 0.7; 
-              }              
-
-              L.marker([lat, lng], markerOptions)
-                .addTo(map)
-                .bindPopup(popupContent);
-            }
-          }
-        });
-      }
-    });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
-
-
