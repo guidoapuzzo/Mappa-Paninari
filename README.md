@@ -1,2 +1,70 @@
-# Mappa-Paninari
-Paninari Location Map from sandrinoalpepe's series "Il miglior paninaro"
+# 🥪 Mappa Paninari
+
+Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe** nella serie *"Il miglior paninaro"*.
+
+**🔗 Demo:** https://guidoapuzzo.github.io/Mappa-Paninari/
+
+## Funzionalità
+
+- Mappa interattiva (OpenStreetMap) centrata su Milano
+- Un marker per ogni locale, con popup che contiene nome, link al video, pagina Instagram e dettagli sulla posizione
+- Pulsante **"Ottieni indicazioni"** che apre Google Maps con la destinazione già impostata
+- Geolocalizzazione dell'utente
+- Marker semitrasparenti per le posizioni solo approssimative
+- Aggiornamento dei dati senza toccare il codice: basta modificare il foglio Google
+
+## Stack
+
+| Ambito | Tecnologia |
+| --- | --- |
+| Frontend | HTML5, CSS3, JavaScript (ES6+, nessun framework né build) |
+| Mappa | [Leaflet](https://leafletjs.com/) 1.9.4 + tile [OpenStreetMap](https://www.openstreetmap.org/) |
+| Geolocalizzazione | [leaflet.locatecontrol](https://github.com/domoritz/leaflet-locatecontrol) |
+| Parsing dati | [PapaParse](https://www.papaparse.com/) |
+| "Backend" / dati | Google Sheets pubblicato come CSV |
+| Hosting | GitHub Pages |
+
+## Come funziona
+
+1. All'avvio il browser scarica il CSV del foglio Google pubblicato.
+2. PapaParse lo converte in oggetti, uno per riga.
+3. Per ogni riga con coordinate valide viene creato un marker Leaflet con il suo popup.
+
+Colonne del foglio:
+
+| Colonna | Obbligatoria | Descrizione |
+| --- | --- | --- |
+| `nome` | sì | Nome del locale |
+| `lat`, `lng` | sì | Coordinate in gradi decimali |
+| `video` | sì | URL del video |
+| `instagram` | no | URL della pagina Instagram |
+| `dettagli_posizione` | no | Note per trovare il locale |
+| `approssimativo` | no | `sì` se la posizione è indicativa |
+
+## Sicurezza
+
+I dati arrivano da una fonte esterna, quindi non sono considerati affidabili: i valori vengono sottoposti a escape prima di essere inseriti nei popup e i link sono accettati solo se `http(s)`, per prevenire XSS.
+
+## Eseguire in locale
+
+Non servono dipendenze da installare. Serve solo un server statico (i browser non permettono di scaricare il CSV da `file://`):
+
+```bash
+git clone https://github.com/guidoapuzzo/Mappa-Paninari.git
+cd Mappa-Paninari
+python3 -m http.server 8000
+```
+
+Poi apri http://localhost:8000.
+
+## Struttura
+
+```
+├── index.html   # struttura della pagina e caricamento librerie
+├── style.css    # stili
+└── app.js       # logica: caricamento CSV, marker, popup, gestione errori
+```
+
+## Licenza
+
+Distribuito con licenza MIT, vedi [LICENSE](LICENSE).
