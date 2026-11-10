@@ -34,6 +34,24 @@ function hasValue(value) {
   return Boolean(value && value.trim() !== '');
 }
 
+/**
+ * Pulsante principale del popup.
+ * - Se nel foglio c'è un link Google Maps del locale (colonna `maps`) apre la scheda esatta del posto.
+ * - Altrimenti (es. food truck) calcola le indicazioni verso le coordinate.
+ */
+function directionsButton(row, lat, lng) {
+  const className = 'popup-btn popup-btn--primary';
+
+  if (hasValue(row.maps)) {
+    const place = link(row.maps, 'Apri su Google Maps', className);
+    if (place) return place;
+  }
+
+  // La partenza viene rilevata automaticamente da Google Maps.
+  const directionsURL = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  return link(directionsURL, 'Ottieni Indicazioni', className);
+}
+
 function buildPopup(row, lat, lng) {
   const actions = [];
 
@@ -45,9 +63,7 @@ function buildPopup(row, lat, lng) {
     if (instagram) actions.push(instagram);
   }
 
-  // La partenza viene rilevata automaticamente da Google Maps.
-  const directionsURL = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-  actions.push(link(directionsURL, 'Ottieni Indicazioni', 'popup-btn popup-btn--primary'));
+  actions.push(directionsButton(row, lat, lng));
 
   const notes = [];
   if (hasValue(row.dettagli_posizione)) {
