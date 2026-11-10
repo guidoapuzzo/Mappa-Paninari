@@ -99,13 +99,54 @@ function addMarker(layer, row) {
     .bindPopup(buildPopup(row, lat, lng), { maxWidth: 260, autoPanPadding: [24, 24] });
   marker.placeName = String(row.nome ?? '').trim();
 
-  // Il popup si apre anche al passaggio del mouse. Si toglie il comportamento predefinito di Leaflet
-  // (il clic "alterna" aperto/chiuso), altrimenti passare sopra e poi cliccare chiuderebbe il popup.
+  enableHoverPopup(marker);
+  return marker;
+}
+
+/**
+ * Popup al passaggio del mouse:
+ * - si apre quando il mouse entra nel pin e si chiude quando esce (con un breve ritardo, così si può
+ *   spostare il mouse sul popup per cliccare i pulsanti);
+ * - il clic lo "fissa": resta aperto finché non si chiude con la X, un clic sulla mappa o un altro popup.
+ * Si toglie il clic predefinito di Leaflet, che alternava aperto/chiuso e avrebbe chiuso un popup
+ * già aperto dal passaggio del mouse.
+ */
+const HOVER_CLOSE_DELAY_MS = 300;
+let hoverCloseTimer = null;
+
+function enableHoverPopup(marker) {
+  let pinned = false;
+
+  const cancelClose = () => clearTimeout(hoverCloseTimer);
+  const scheduleClose = () => {
+    cancelClose();
+    if (pinned) return;
+    hoverCloseTimer = setTimeout(() => marker.closePopup(), HOVER_CLOSE_DELAY_MS);
+  };
+
   marker.off('click');
-  marker.on('mouseover click', () => {
+  marker.on('mouseover', () => {
+    cancelClose();
     if (!marker.isPopupOpen()) marker.openPopup();
   });
-  return marker;
+  marker.on('mouseout', scheduleClose);
+  marker.on('click', () => {
+    pinned = true;
+    cancelClose();
+    if (!marker.isPopupOpen()) marker.openPopup();
+  });
+
+  // Ogni pin ha il suo popup (e il suo elemento HTML, riutilizzato a ogni apertura):
+  // i listener vanno quindi agganciati una sola volta.
+  let popupBound = false;
+  marker.on('popupopen', (event) => {
+    if (popupBound) return;
+    popupBound = true;
+    const element = event.popup.getElement();
+    element.addEventListener('mouseenter', cancelClose);
+    element.addEventListener('mouseleave', scheduleClose);
+  });
+  marker.on('popupclose', () => { pinned = false; });
 }
 
 /** Pin arancione con panino, più riconoscibile del marker blu di default. */
