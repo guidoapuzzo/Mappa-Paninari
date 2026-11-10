@@ -98,6 +98,13 @@ function addMarker(layer, row) {
     .addTo(layer)
     .bindPopup(buildPopup(row, lat, lng), { maxWidth: 260, autoPanPadding: [24, 24] });
   marker.placeName = String(row.nome ?? '').trim();
+
+  // Il popup si apre anche al passaggio del mouse. Si toglie il comportamento predefinito di Leaflet
+  // (il clic "alterna" aperto/chiuso), altrimenti passare sopra e poi cliccare chiuderebbe il popup.
+  marker.off('click');
+  marker.on('mouseover click', () => {
+    if (!marker.isPopupOpen()) marker.openPopup();
+  });
   return marker;
 }
 

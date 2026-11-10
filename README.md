@@ -9,7 +9,7 @@ Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe
 - Mappa interattiva (OpenStreetMap) centrata su Milano
 - **Ricerca per nome**: scrivi nella barra in alto a sinistra e scegli un locale, la mappa ci zooma e apre il popup (senza distinguere maiuscole e accenti)
 - Pin personalizzati raggruppati in cluster numerati quando sono vicini (si aprono con un tocco o con lo zoom)
-- Un marker per ogni locale, con popup che contiene nome, link al video, pagina Instagram e dettagli sulla posizione
+- Un marker per ogni locale, con popup che si apre al passaggio del mouse o al clic, che contiene nome, link al video, pagina Instagram e dettagli sulla posizione
 - Pulsante **"Apri su Google Maps"** con il link esatto del locale, oppure **"Ottieni indicazioni"** verso le coordinate per le posizioni approssimative (es. food truck)
 - Geolocalizzazione dell'utente
 - Marker semitrasparenti per le posizioni solo approssimative
