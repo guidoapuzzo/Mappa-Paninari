@@ -120,13 +120,17 @@ function loadPlaces(map) {
   });
 }
 
-const map = L.map('map', { zoomControl: false }).setView(MILANO, 12);
+const map = L.map('map', { zoomControl: false, maxZoom: 19 }).setView(MILANO, 12);
 
-// Sfondo OpenStreetMap; viene schiarito e desaturato via CSS (.leaflet-tile-pane) così i pin risaltano
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap contributors',
-}).addTo(map);
+// Sfondo vettoriale OpenFreeMap (gratuito, senza chiave API): più moderno e leggibile.
+// Stili alternativi: 'bright' (più saturo), 'positron' (grigio chiaro minimale).
+const MAP_STYLE = 'liberty';
+L.maplibreGL({ style: `https://tiles.openfreemap.org/styles/${MAP_STYLE}` }).addTo(map);
+map.attributionControl.addAttribution(
+  '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> ' +
+  '© <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> ' +
+  'Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+);
 
 // Controlli in basso a destra: a portata di pollice su mobile
 L.control.zoom({ position: 'bottomright' }).addTo(map);

@@ -19,7 +19,8 @@ Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe
 | Ambito | Tecnologia |
 | --- | --- |
 | Frontend | HTML5, CSS3, JavaScript (ES6+, nessun framework né build) |
-| Mappa | [Leaflet](https://leafletjs.com/) 1.9.4 + tile [OpenStreetMap](https://www.openstreetmap.org/) |
+| Mappa | [Leaflet](https://leafletjs.com/) 1.9.4 |
+| Sfondo mappa | Tile vettoriali [OpenFreeMap](https://openfreemap.org/) (dati OpenStreetMap) via [MapLibre GL JS](https://maplibre.org/) 4.7.1, senza chiavi API |
 | Geolocalizzazione | [leaflet.locatecontrol](https://github.com/domoritz/leaflet-locatecontrol) |
 | Raggruppamento marker | [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) 1.5.3 |
 | Parsing dati | [PapaParse](https://www.papaparse.com/) |

@@ -140,10 +140,6 @@
   border-radius: 12px;
 }
 
-/* Sfondo mappa più chiaro e neutro: i pin arancioni risaltano di più */
-.leaflet-tile-pane {
-  filter: grayscale(.65) saturate(.8) brightness(1.06) contrast(.92);
-}
 
 /* ---------- Cluster ---------- */
 .marker-cluster {
