@@ -88,16 +88,17 @@ function isApproximate(row) {
 function addMarker(layer, row) {
   const lat = parseFloat(row.lat);
   const lng = parseFloat(row.lng);
-  if (Number.isNaN(lat) || Number.isNaN(lng)) return false;
+  if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
 
   // Marker semitrasparente se la posizione è approssimativa
   const options = { icon: createIcon(isApproximate(row)), title: row.nome };
   if (isApproximate(row)) options.opacity = 0.7;
 
-  L.marker([lat, lng], options)
+  const marker = L.marker([lat, lng], options)
     .addTo(layer)
     .bindPopup(buildPopup(row, lat, lng), { maxWidth: 260, autoPanPadding: [24, 24] });
-  return true;
+  marker.placeName = String(row.nome ?? '').trim();
+  return marker;
 }
 
 /** Pin arancione con panino, più riconoscibile del marker blu di default. */
@@ -119,6 +120,111 @@ function showError(message) {
   document.body.appendChild(box);
 }
 
+/** Minuscolo e senza accenti, così "pizzà" trova "Pizza". */
+function normalize(text) {
+  return String(text ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+/** Zoom sul locale scelto e apertura del popup (anche se il pin è dentro un cluster). */
+function showPlace(map, cluster, marker) {
+  map.setView(marker.getLatLng(), Math.max(map.getZoom(), 16), { animate: false });
+  cluster.zoomToShowLayer(marker, () => marker.openPopup());
+}
+
+/** Barra di ricerca per nome dei locali, in alto a sinistra. */
+function addSearchControl(map, cluster, markers) {
+  const MAX_RESULTS = 8;
+  const searchable = markers
+    .filter((marker) => marker.placeName)
+    .map((marker) => ({ marker, key: normalize(marker.placeName) }));
+
+  const control = L.control({ position: 'topleft' });
+  control.onAdd = () => {
+    const box = L.DomUtil.create('div', 'map-search');
+    const input = L.DomUtil.create('input', 'map-search-input', box);
+    input.type = 'search';
+    input.placeholder = 'Cerca un locale…';
+    input.autocomplete = 'off';
+    input.setAttribute('aria-label', 'Cerca un locale');
+    const list = L.DomUtil.create('ul', 'map-search-results', box);
+    list.setAttribute('role', 'listbox');
+    list.hidden = true;
+
+    let results = [];
+    let active = -1;
+
+    const setActive = (index) => {
+      active = index;
+      [...list.children].forEach((li, i) => li.classList.toggle('is-active', i === active));
+    };
+
+    const clear = () => {
+      results = [];
+      list.replaceChildren();
+      list.hidden = true;
+    };
+
+    const choose = (item) => {
+      input.value = item.marker.placeName;
+      clear();
+      input.blur();
+      showPlace(map, cluster, item.marker);
+    };
+
+    const render = () => {
+      const query = normalize(input.value);
+      if (!query) return clear();
+
+      results = searchable
+        .filter((item) => item.key.includes(query))
+        .sort((a, b) => a.key.indexOf(query) - b.key.indexOf(query) || a.key.localeCompare(b.key))
+        .slice(0, MAX_RESULTS);
+
+      list.replaceChildren();
+      if (results.length === 0) {
+        const empty = L.DomUtil.create('li', 'map-search-empty', list);
+        empty.textContent = 'Nessun locale trovato';
+      }
+      results.forEach((item, i) => {
+        const li = L.DomUtil.create('li', 'map-search-item', list);
+        li.setAttribute('role', 'option');
+        li.textContent = item.marker.placeName;
+        li.addEventListener('mousedown', (event) => event.preventDefault());
+        li.addEventListener('click', () => choose(item));
+        li.addEventListener('mouseenter', () => setActive(i));
+      });
+      active = -1;
+      list.hidden = false;
+    };
+
+    input.addEventListener('input', render);
+    input.addEventListener('focus', render);
+    input.addEventListener('blur', () => setTimeout(clear, 150));
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' && results.length) {
+        event.preventDefault();
+        setActive((active + 1) % results.length);
+      } else if (event.key === 'ArrowUp' && results.length) {
+        event.preventDefault();
+        setActive((active - 1 + results.length) % results.length);
+      } else if (event.key === 'Enter' && results.length) {
+        event.preventDefault();
+        choose(results[active >= 0 ? active : 0]);
+      } else if (event.key === 'Escape') {
+        input.value = '';
+        clear();
+        input.blur();
+      }
+    });
+
+    // Evita che clic, trascinamenti e scroll sul box muovano la mappa
+    L.DomEvent.disableClickPropagation(box);
+    L.DomEvent.disableScrollPropagation(box);
+    return box;
+  };
+  control.addTo(map);
+}
+
 function loadPlaces(map) {
   // Raggruppa i pin vicini: si aprono con un tocco/zoom
   const cluster = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 45 });
@@ -129,8 +235,9 @@ function loadPlaces(map) {
     header: true,
     skipEmptyLines: true,
     complete: (results) => {
-      const added = results.data.filter((row) => addMarker(cluster, row)).length;
-      if (added === 0) showError('Nessun locale trovato nei dati.');
+      const markers = results.data.map((row) => addMarker(cluster, row)).filter(Boolean);
+      if (markers.length === 0) showError('Nessun locale trovato nei dati.');
+      addSearchControl(map, cluster, markers);
     },
     error: () => showError('Impossibile caricare i dati. Riprova più tardi.'),
   });
