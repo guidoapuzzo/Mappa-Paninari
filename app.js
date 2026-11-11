@@ -2,6 +2,8 @@
 
 const MILANO = [45.4642, 9.19];
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfES7XOCgqkVs8u8H5jdAUSsLliB6a6OXX2nSBXhcaXpvGS4KQSYDJUp0hCnQ7Cn-9MQSOoKzlMAe1/pub?gid=2113170927&single=true&output=csv';
+// Copia di riserva dei dati (si aggiorna con scripts/aggiorna-dati.sh), usata se il foglio non risponde
+const FALLBACK_URL = 'data/locali.csv';
 
 /** Escape dei caratteri HTML: i dati del foglio non vanno mai inseriti "grezzi" nel DOM. */
 function escapeHtml(value) {
@@ -278,17 +280,47 @@ function loadPlaces(map) {
   const cluster = L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 45 });
   map.addLayer(cluster);
 
-  Papa.parse(SHEET_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: (results) => {
-      const markers = results.data.map((row) => addMarker(cluster, row)).filter(Boolean);
+  loadRows([SHEET_URL, FALLBACK_URL])
+    .then((rows) => {
+      const markers = rows.map((row) => addMarker(cluster, row)).filter(Boolean);
       if (markers.length === 0) showError('Nessun locale trovato nei dati.');
       addSearchControl(map, cluster, markers);
-    },
-    error: () => showError('Impossibile caricare i dati. Riprova più tardi.'),
+    })
+    .catch(() => showError('Impossibile caricare i dati. Riprova più tardi.'));
+}
+
+function parseCsv(url) {
+  return new Promise((resolve, reject) => {
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => resolve(results.data),
+      error: reject,
+    });
   });
+}
+
+function hasCoordinates(row) {
+  return !Number.isNaN(parseFloat(row.lat)) && !Number.isNaN(parseFloat(row.lng));
+}
+
+/**
+ * Prova le sorgenti nell'ordine indicato e usa la prima che restituisce locali validi.
+ * Se il foglio è irraggiungibile o limitato da Google (risposta d'errore al posto del CSV),
+ * si passa alla copia di riserva.
+ */
+async function loadRows(urls) {
+  for (const url of urls) {
+    try {
+      const rows = await parseCsv(url);
+      if (rows.some(hasCoordinates)) return rows;
+    } catch {
+      // sorgente non disponibile: si prova la successiva
+    }
+    console.warn(`Dati non disponibili da ${url}, provo la sorgente successiva.`);
+  }
+  throw new Error('Nessuna sorgente dati disponibile');
 }
 
 const map = L.map('map', { zoomControl: false, maxZoom: 19 }).setView(MILANO, 12);
