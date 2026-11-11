@@ -329,6 +329,8 @@ const map = L.map('map', { zoomControl: false, maxZoom: 19 }).setView(MILANO, 12
 // Stili alternativi: 'bright' (più saturo), 'positron' (grigio chiaro minimale).
 const MAP_STYLE = 'liberty';
 L.maplibreGL({ style: `https://tiles.openfreemap.org/styles/${MAP_STYLE}` }).addTo(map);
+// Dicitura sempre visibile: progetto non ufficiale, informazioni solo indicative
+map.attributionControl.addAttribution('Progetto non ufficiale di Guido Apuzzo · informazioni indicative');
 map.attributionControl.addAttribution(
   '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> ' +
   '© <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> ' +
