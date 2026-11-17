@@ -1,19 +1,18 @@
 # 🥪 Mappa Paninari
 
-Mappa interattiva dei paninari di Milano e dintorni visitati da **sandrinoalpepe** nella serie *"Il miglior paninaro"*.
+Mappa interattiva dei paninari visitati da **sandrinoalpepe** nella serie *"Il miglior paninaro"*.
 
 **🔗 Demo:** https://guidoapuzzo.github.io/Mappa-Paninari/
 
 ## Funzionalità
 
-- Mappa interattiva (dati OpenStreetMap) centrata su Milano
+- Mappa interattiva (dati OpenStreetMap) centrata su Milano (maggioranza dei locali)
 - **Ricerca per nome**: scrivi nella barra in alto a sinistra e scegli un locale, la mappa ci zooma e apre il popup (senza distinguere maiuscole e accenti)
 - Pin personalizzati raggruppati in cluster numerati quando sono vicini (si aprono con un tocco o con lo zoom)
 - Un marker per ogni locale, con popup che si apre al passaggio del mouse (e si chiude quando esci) oppure al clic (resta aperto), e che contiene nome, link al video, pagina Instagram e dettagli sulla posizione
 - Pulsante **"Apri su Google Maps"** con il link esatto del locale, oppure **"Ottieni indicazioni"** verso le coordinate per le posizioni approssimative (es. food truck)
 - Geolocalizzazione dell'utente
 - Marker semitrasparenti per le posizioni solo approssimative
-- Aggiornamento dei dati senza toccare il codice: basta modificare il foglio Google
 
 ## Stack
 
@@ -74,7 +73,7 @@ Progetto indipendente e **non ufficiale**, realizzato a scopo personale e inform
 
 Le informazioni (posizione, esistenza e dettagli dei locali) sono **indicative**: possono contenere errori o non essere aggiornate e sono fornite "così come sono", senza garanzie di alcun tipo. Prima di spostarti, verifica sempre direttamente con il locale. L'autore non risponde di eventuali inesattezze né di danni derivanti dall'uso della mappa.
 
-I nomi, i marchi e i contenuti citati (video, immagini, pagine social) appartengono ai rispettivi proprietari. I link rimandano ai servizi originali: i contenuti non sono copiati né ospitati qui. Per segnalare un errore o chiedere la rimozione di un riferimento, apri una issue su GitHub.
+I link rimandano ai servizi originali: i contenuti non sono copiati né ospitati qui. Per segnalare un errore o chiedere la rimozione di un riferimento, apri una issue su GitHub.
 
 ## Privacy
 
