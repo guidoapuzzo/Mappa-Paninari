@@ -70,7 +70,7 @@ Lo script rifiuta di sovrascrivere la copia se il file scaricato non sembra il C
 ## Avvertenze
 
 Progetto indipendente e **non ufficiale**, realizzato a scopo personale e informativo.
-
+I nomi, i marchi e i contenuti citati (video, immagini, pagine social) appartengono ai rispettivi proprietari.
 Le informazioni (posizione, esistenza e dettagli dei locali) sono **indicative**: possono contenere errori o non essere aggiornate e sono fornite "così come sono", senza garanzie di alcun tipo. Prima di spostarti, verifica sempre direttamente con il locale. L'autore non risponde di eventuali inesattezze né di danni derivanti dall'uso della mappa.
 
 I link rimandano ai servizi originali: i contenuti non sono copiati né ospitati qui. Per segnalare un errore o chiedere la rimozione di un riferimento, apri una issue su GitHub.
