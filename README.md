@@ -4,6 +4,8 @@ Mappa interattiva dei paninari visitati da **sandrinoalpepe** nella serie *"Il m
 
 **🔗 Demo:** https://guidoapuzzo.github.io/Mappa-Paninari/
 
+![Anteprima della mappa: pin arancioni, cluster numerati e barra di ricerca](docs/screenshot.webp)
+
 ## Funzionalità
 
 - Mappa interattiva (dati OpenStreetMap) centrata su Milano (maggioranza dei locali)
